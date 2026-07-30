@@ -1,0 +1,146 @@
+// Sistema de Gerenciamento de Filas Hospitalares
+// Datasource is SQLite for local development. Every field type used below
+// (String, Int, DateTime, optional relations) is supported unchanged by the
+// PostgreSQL and MySQL connectors, so switching `provider` + `url` later is
+// enough to migrate — no schema rewrite needed.
+//
+// NOTE: SQLite has no native enum support in Prisma, so status-like fields
+// (Fila.status, Chamada.resultado) are modeled as String and validated with
+// zod at the application boundary (see src/lib/validation.ts).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Unidade {
+  id       String   @id @default(cuid())
+  nome     String
+  endereco String
+  criadoEm DateTime @default(now())
+
+  vinculos ProfissionalUnidadeEspecialidade[]
+  triagens Triagem[]
+
+  @@map("unidades")
+}
+
+model Profissional {
+  id       String   @id @default(cuid())
+  nome     String
+  registro String
+  criadoEm DateTime @default(now())
+
+  vinculos ProfissionalUnidadeEspecialidade[]
+  filas    Fila[]
+
+  @@map("profissionais")
+}
+
+model Especialidade {
+  id          String @id @default(cuid())
+  nome        String
+  codigoSenha String @unique // prefixo curto usado na senha, ex: "C" -> C001
+
+  vinculos ProfissionalUnidadeEspecialidade[]
+  filas    Fila[]
+
+  @@map("especialidades")
+}
+
+model ProfissionalUnidadeEspecialidade {
+  id              String @id @default(cuid())
+  profissionalId  String
+  unidadeId       String
+  especialidadeId String
+
+  profissional  Profissional  @relation(fields: [profissionalId], references: [id], onDelete: Cascade)
+  unidade       Unidade       @relation(fields: [unidadeId], references: [id], onDelete: Cascade)
+  especialidade Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Cascade)
+
+  @@unique([profissionalId, unidadeId, especialidadeId])
+  @@map("profissional_unidade_especialidade")
+}
+
+model Paciente {
+  id             String   @id @default(cuid())
+  nomeCompleto   String
+  dataNascimento DateTime
+  criadoEm       DateTime @default(now())
+
+  triagens Triagem[]
+
+  @@map("pacientes")
+}
+
+model Triagem {
+  id           String   @id @default(cuid())
+  pacienteId   String
+  unidadeId    String
+  comorbidades String?
+  medicamentos String?
+  observacoes  String?
+  pressao      String?
+  glicemia     Int?
+  criadoEm     DateTime @default(now())
+  criadoPor    String
+
+  paciente Paciente @relation(fields: [pacienteId], references: [id], onDelete: Cascade)
+  unidade  Unidade  @relation(fields: [unidadeId], references: [id], onDelete: Cascade)
+  filas    Fila[]
+
+  @@map("triagens")
+}
+
+model Prioridade {
+  id   String @id @default(cuid())
+  nome String @unique
+  peso Int
+
+  filas Fila[]
+
+  @@map("prioridades")
+}
+
+// status: aguardando | chamado | em_atendimento | finalizado | cancelado
+model Fila {
+  id                String    @id @default(cuid())
+  triagemId         String
+  especialidadeId   String
+  prioridadeId      String
+  profissionalId    String?
+  senha             String
+  status            String    @default("aguardando")
+  tentativasChamada Int       @default(0)
+  sala              String?
+  criadoEm          DateTime  @default(now())
+  chamadoEm         DateTime?
+  atendidoEm        DateTime?
+  finalizadoEm      DateTime?
+
+  triagem       Triagem       @relation(fields: [triagemId], references: [id], onDelete: Cascade)
+  especialidade Especialidade @relation(fields: [especialidadeId], references: [id], onDelete: Cascade)
+  prioridade    Prioridade    @relation(fields: [prioridadeId], references: [id])
+  profissional  Profissional? @relation(fields: [profissionalId], references: [id])
+  chamadas      Chamada[]
+
+  @@index([especialidadeId, status])
+  @@index([status])
+  @@map("filas")
+}
+
+// resultado: compareceu | nao_compareceu | pendente
+model Chamada {
+  id        String   @id @default(cuid())
+  filaId    String
+  chamadoEm DateTime @default(now())
+  resultado String   @default("pendente")
+
+  fila Fila @relation(fields: [filaId], references: [id], onDelete: Cascade)
+
+  @@map("chamadas")
+}
