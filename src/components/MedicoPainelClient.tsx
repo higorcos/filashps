@@ -1,9 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Fragment, useCallback, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import type { FilaResposta } from "@/lib/types";
+import type { FilaComDetalhes, FilaResposta } from "@/lib/types";
+import { calcularIdade } from "@/lib/idade";
 
 const STATUS_LABEL: Record<string, string> = {
   aguardando: "Aguardando",
@@ -26,6 +27,7 @@ export function MedicoPainelClient() {
   const [sala, setSala] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState<string | null>(null);
+  const [filaExpandida, setFilaExpandida] = useState<string | null>(null);
 
   const carregarFila = useCallback(async () => {
     if (!unidadeId || !especialidadeId) return;
@@ -58,6 +60,18 @@ export function MedicoPainelClient() {
     };
   }, [unidadeId, especialidadeId]);
 
+  const meuAtendimentoId = fila?.emAndamento.find((f) => f.profissionalId === profissionalId)?.id ?? null;
+  const meuAtendimentoSala =
+    fila?.emAndamento.find((f) => f.profissionalId === profissionalId)?.sala ?? null;
+
+  // ao começar a acompanhar uma nova chamada (ex.: após recarregar a página), preenche o campo
+  // de sala com o valor já salvo na fila, para o profissional poder ver e alterar antes de chamar novamente
+  const [salaSincronizadaCom, setSalaSincronizadaCom] = useState<string | null>(null);
+  if (meuAtendimentoId && meuAtendimentoId !== salaSincronizadaCom) {
+    setSalaSincronizadaCom(meuAtendimentoId);
+    setSala(meuAtendimentoSala ?? "");
+  }
+
   async function executarAcao(acao: () => Promise<Response>) {
     setCarregando(true);
     setMensagem(null);
@@ -86,7 +100,13 @@ export function MedicoPainelClient() {
   }
 
   function chamarNovamente(filaId: string) {
-    executarAcao(() => fetch(`/api/fila/${filaId}/chamar-novamente`, { method: "POST" }));
+    executarAcao(() =>
+      fetch(`/api/fila/${filaId}/chamar-novamente`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sala }),
+      }),
+    );
   }
 
   function iniciar(filaId: string) {
@@ -133,14 +153,17 @@ export function MedicoPainelClient() {
       )}
 
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <label className="mb-1 block text-sm font-medium text-slate-700">Sala</label>
+        <label className="mb-1 block text-sm font-medium text-slate-700">Sala / local de atendimento</label>
         <input
           type="text"
           value={sala}
           onChange={(e) => setSala(e.target.value)}
-          placeholder="Ex: Consultório 3"
+          placeholder="Ex: Consultório 3, Sala de curativos, Recepção..."
           className="w-full max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
+        <p className="mt-1 text-xs text-slate-500">
+          Pode alterar antes de chamar novamente — o valor é atualizado a cada nova tentativa.
+        </p>
 
         {meuAtendimento ? (
           <div className="mt-6 rounded-xl border border-brand-200 bg-brand-50 p-5">
@@ -152,6 +175,7 @@ export function MedicoPainelClient() {
               {meuAtendimento.triagem.paciente.nomeCompleto} · Prioridade: {meuAtendimento.prioridade.nome}
               {meuAtendimento.tentativasChamada > 0 && ` · Tentativas: ${meuAtendimento.tentativasChamada}`}
             </p>
+            <TriagemDetalhes triagem={meuAtendimento.triagem} />
             <div className="mt-4 flex flex-wrap gap-3">
               {meuAtendimento.status === "chamado" && (
                 <>
@@ -203,20 +227,38 @@ export function MedicoPainelClient() {
                 <th className="px-4 py-2">Paciente</th>
                 <th className="px-4 py-2">Prioridade</th>
                 <th className="px-4 py-2">Tentativas</th>
+                <th className="px-4 py-2" />
               </tr>
             </thead>
             <tbody>
               {fila?.aguardando.map((f) => (
-                <tr key={f.id} className="border-t border-slate-100">
-                  <td className="px-4 py-2 font-semibold tabular-nums">{f.senha}</td>
-                  <td className="px-4 py-2">{f.triagem.paciente.nomeCompleto}</td>
-                  <td className="px-4 py-2">{f.prioridade.nome}</td>
-                  <td className="px-4 py-2">{f.tentativasChamada}</td>
-                </tr>
+                <Fragment key={f.id}>
+                  <tr className="border-t border-slate-100">
+                    <td className="px-4 py-2 font-semibold tabular-nums">{f.senha}</td>
+                    <td className="px-4 py-2">{f.triagem.paciente.nomeCompleto}</td>
+                    <td className="px-4 py-2">{f.prioridade.nome}</td>
+                    <td className="px-4 py-2">{f.tentativasChamada}</td>
+                    <td className="px-4 py-2 text-right">
+                      <button
+                        onClick={() => setFilaExpandida(filaExpandida === f.id ? null : f.id)}
+                        className="text-sm font-medium text-brand-600 hover:underline"
+                      >
+                        {filaExpandida === f.id ? "Ocultar triagem" : "Ver triagem"}
+                      </button>
+                    </td>
+                  </tr>
+                  {filaExpandida === f.id && (
+                    <tr className="border-t border-slate-100 bg-slate-50">
+                      <td colSpan={5} className="px-4 py-3">
+                        <TriagemDetalhes triagem={f.triagem} />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               ))}
               {fila && fila.aguardando.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-6 text-center text-slate-400">
+                  <td colSpan={5} className="px-4 py-6 text-center text-slate-400">
                     Nenhum paciente aguardando.
                   </td>
                 </tr>
@@ -254,6 +296,48 @@ export function MedicoPainelClient() {
             </table>
           </div>
         </div>
+      )}
+    </div>
+  );
+}
+
+function TriagemDetalhes({ triagem }: { triagem: FilaComDetalhes["triagem"] }) {
+  const idade = calcularIdade(new Date(triagem.paciente.dataNascimento));
+
+  return (
+    <div className="space-y-2 text-sm text-slate-700">
+      <div className="flex flex-wrap gap-x-6 gap-y-1">
+        <span>
+          <span className="text-slate-500">Idade:</span> {idade} anos
+        </span>
+        {triagem.pressao && (
+          <span>
+            <span className="text-slate-500">Pressão:</span> {triagem.pressao}
+          </span>
+        )}
+        {triagem.glicemia != null && (
+          <span>
+            <span className="text-slate-500">Glicemia:</span> {triagem.glicemia} mg/dL
+          </span>
+        )}
+        <span>
+          <span className="text-slate-500">Triagem por:</span> {triagem.criadoPor}
+        </span>
+      </div>
+      {triagem.comorbidades && (
+        <p>
+          <span className="text-slate-500">Comorbidades:</span> {triagem.comorbidades}
+        </p>
+      )}
+      {triagem.medicamentos && (
+        <p>
+          <span className="text-slate-500">Medicamentos em uso:</span> {triagem.medicamentos}
+        </p>
+      )}
+      {triagem.observacoes && (
+        <p>
+          <span className="text-slate-500">Observações / queixas:</span> {triagem.observacoes}
+        </p>
       )}
     </div>
   );

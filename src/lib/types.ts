@@ -11,7 +11,16 @@ export type FilaComDetalhes = {
   profissionalId: string | null;
   prioridade: { id: string; nome: string; peso: number };
   profissional: { id: string; nome: string } | null;
-  triagem: { paciente: { id: string; nomeCompleto: string; dataNascimento: string } };
+  triagem: {
+    comorbidades: string | null;
+    medicamentos: string | null;
+    observacoes: string | null;
+    pressao: string | null;
+    glicemia: number | null;
+    criadoPor: string;
+    criadoEm: string;
+    paciente: { id: string; nomeCompleto: string; dataNascimento: string };
+  };
   chamadas: { id: string; chamadoEm: string; resultado: string }[];
 };
 

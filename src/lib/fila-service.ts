@@ -178,7 +178,7 @@ export async function chamarProximo(params: {
   return fila;
 }
 
-export async function chamarNovamente(filaId: string) {
+export async function chamarNovamente(filaId: string, sala?: string) {
   const fila = await prisma.$transaction(async (tx) => {
     const atual = await tx.fila.findUniqueOrThrow({ where: { id: filaId } });
     if (atual.status !== FILA_STATUS.CHAMADO) {
@@ -190,7 +190,10 @@ export async function chamarNovamente(filaId: string) {
 
     return tx.fila.update({
       where: { id: filaId },
-      data: { chamadoEm: new Date() },
+      data: {
+        chamadoEm: new Date(),
+        ...(sala !== undefined ? { sala: sala || null } : {}),
+      },
       include: { especialidade: true, triagem: { include: { paciente: true } } },
     });
   });

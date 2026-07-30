@@ -22,3 +22,15 @@ export const GLICEMIA_MIN = 20;
 export const GLICEMIA_MAX = 600;
 
 export const IDADE_PRIORIDADE_IDOSO = 60;
+
+export const COMORBIDADES_COMUNS = [
+  "Hipertensão",
+  "Diabetes",
+  "Asma",
+  "Cardiopatia",
+  "Doença renal crônica",
+  "Obesidade",
+  "Tabagismo",
+  "AVC prévio",
+  "Câncer",
+] as const;

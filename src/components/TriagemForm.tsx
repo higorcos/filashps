@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Unidade, Especialidade, Prioridade } from "@/generated/prisma/client";
 import { triagemSchema } from "@/lib/validation";
 import { calcularIdade } from "@/lib/idade";
-import { GLICEMIA_MIN, GLICEMIA_MAX, IDADE_PRIORIDADE_IDOSO } from "@/lib/constants";
+import { COMORBIDADES_COMUNS, GLICEMIA_MIN, GLICEMIA_MAX, IDADE_PRIORIDADE_IDOSO } from "@/lib/constants";
 
 type Vinculo = { unidadeId: string; especialidadeId: string };
 
@@ -22,7 +22,6 @@ type FormState = {
   unidadeId: string;
   especialidadeIds: string[];
   prioridadeId: string;
-  comorbidades: string;
   medicamentos: string;
   observacoes: string;
   pressao: string;
@@ -36,7 +35,6 @@ const estadoInicial: FormState = {
   unidadeId: "",
   especialidadeIds: [],
   prioridadeId: "",
-  comorbidades: "",
   medicamentos: "",
   observacoes: "",
   pressao: "",
@@ -51,6 +49,8 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
   const [submetendo, setSubmetendo] = useState(false);
   const [erroGeral, setErroGeral] = useState<string | null>(null);
   const [resultado, setResultado] = useState<{ senha: string; especialidade: string }[] | null>(null);
+  const [comorbidadesSelecionadas, setComorbidadesSelecionadas] = useState<string[]>([]);
+  const [comorbidadeOutra, setComorbidadeOutra] = useState("");
 
   const idade = useMemo(() => {
     if (!form.dataNascimento) return null;
@@ -77,6 +77,12 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
     return especialidades.filter((esp) => idsDaUnidade.has(esp.id));
   }, [especialidades, vinculos, form.unidadeId]);
 
+  const comorbidadesTexto = useMemo(() => {
+    const partes = [...comorbidadesSelecionadas];
+    if (comorbidadeOutra.trim()) partes.push(comorbidadeOutra.trim());
+    return partes.join(", ");
+  }, [comorbidadesSelecionadas, comorbidadeOutra]);
+
   const payload = useMemo(
     () => ({
       nomeCompleto: form.nomeCompleto,
@@ -84,14 +90,14 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
       unidadeId: form.unidadeId,
       especialidadeIds: form.especialidadeIds,
       prioridadeId: prioridadeEfetiva,
-      comorbidades: form.comorbidades,
+      comorbidades: comorbidadesTexto,
       medicamentos: form.medicamentos,
       observacoes: form.observacoes,
       pressao: form.pressao,
       glicemia: form.glicemia === "" ? undefined : form.glicemia,
       criadoPor: form.criadoPor,
     }),
-    [form, prioridadeEfetiva],
+    [form, prioridadeEfetiva, comorbidadesTexto],
   );
 
   const validacao = useMemo(() => triagemSchema.safeParse(payload), [payload]);
@@ -122,6 +128,12 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
         ? f.especialidadeIds.filter((e) => e !== id)
         : [...f.especialidadeIds, id],
     }));
+  }
+
+  function alternarComorbidade(nome: string) {
+    setComorbidadesSelecionadas((atual) =>
+      atual.includes(nome) ? atual.filter((c) => c !== nome) : [...atual, nome],
+    );
   }
 
   const glicemiaForaDaFaixa =
@@ -169,6 +181,8 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
       );
       setForm(estadoInicial);
       setTouched({});
+      setComorbidadesSelecionadas([]);
+      setComorbidadeOutra("");
       router.refresh();
     } catch {
       setErroGeral("Não foi possível conectar ao servidor.");
@@ -331,11 +345,32 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
       </div>
 
       <Campo label="Comorbidades" opcional>
-        <textarea
-          value={form.comorbidades}
-          onChange={(e) => setForm((f) => ({ ...f, comorbidades: e.target.value }))}
-          className={inputClass()}
-          rows={2}
+        <div className="flex flex-wrap gap-3">
+          {COMORBIDADES_COMUNS.map((nome) => (
+            <label
+              key={nome}
+              className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
+                comorbidadesSelecionadas.includes(nome)
+                  ? "border-brand-500 bg-brand-50 text-brand-800"
+                  : "border-slate-300 text-slate-700"
+              }`}
+            >
+              <input
+                type="checkbox"
+                className="accent-brand-600"
+                checked={comorbidadesSelecionadas.includes(nome)}
+                onChange={() => alternarComorbidade(nome)}
+              />
+              {nome}
+            </label>
+          ))}
+        </div>
+        <input
+          type="text"
+          value={comorbidadeOutra}
+          onChange={(e) => setComorbidadeOutra(e.target.value)}
+          placeholder="Outra comorbidade (opcional)"
+          className={`${inputClass()} mt-3`}
         />
       </Campo>
 

@@ -30,7 +30,13 @@ function formatarHorario(iso: string) {
 export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; unidadeNome: string }) {
   const [atual, setAtual] = useState<EventoChamada | null>(null);
   const [historico, setHistorico] = useState<EventoChamada[]>([]);
+  const [audioAtivo, setAudioAtivo] = useState(false);
   const primeiraCarga = useRef(true);
+
+  function ativarAudio() {
+    falar("Áudio ativado");
+    setAudioAtivo(true);
+  }
 
   useEffect(() => {
     // aquece a lista de vozes do navegador
@@ -58,8 +64,8 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
       }
 
       const destino = dados.sala
-        ? `${dados.pacienteNome}, comparecer à sala ${dados.sala}`
-        : `${dados.pacienteNome}, comparecer à recepção`;
+        ? `${dados.pacienteNome}, dirija-se a ${dados.sala}`
+        : `${dados.pacienteNome}, dirija-se à recepção`;
       falar(destino);
     });
 
@@ -67,7 +73,22 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
   }, [unidadeId]);
 
   return (
-    <div className="flex min-h-screen flex-col bg-brand-950 px-6 py-8 text-white sm:px-12">
+    <div className="relative flex min-h-screen flex-col bg-brand-950 px-6 py-8 text-white sm:px-12">
+      {!audioAtivo && (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-brand-950/90 text-center">
+          <p className="max-w-md text-lg text-brand-200">
+            O navegador exige uma interação antes de permitir o som das chamadas.
+          </p>
+          <button
+            type="button"
+            onClick={ativarAudio}
+            className="rounded-lg bg-brand-500 px-6 py-3 text-lg font-semibold text-white hover:bg-brand-600"
+          >
+            🔊 Toque para ativar o som
+          </button>
+        </div>
+      )}
+
       <header className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold text-brand-200">{unidadeNome}</h1>
         <span className="text-sm text-brand-400">Painel de chamadas</span>
@@ -84,7 +105,7 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
               {atual.senha}
             </p>
             <p className="mt-6 text-[clamp(1.5rem,4vw,3rem)] font-semibold text-brand-400">
-              {atual.sala ? `Sala ${atual.sala}` : "Recepção"}
+              {atual.sala ? atual.sala : "Recepção"}
             </p>
           </div>
         ) : (
@@ -106,7 +127,7 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
                 {c.pacienteNome}
               </p>
               <p className="text-xs tabular-nums text-brand-300">{c.senha}</p>
-              <p className="text-xs text-brand-300">{c.sala ? `Sala ${c.sala}` : "Recepção"}</p>
+              <p className="text-xs text-brand-300">{c.sala ? c.sala : "Recepção"}</p>
               <p className="text-xs text-brand-400">{formatarHorario(c.chamadoEm)}</p>
             </div>
           ))}

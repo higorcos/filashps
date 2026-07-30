@@ -68,3 +68,7 @@ export const chamarProximoSchema = z.object({
   profissionalId: z.string().min(1),
   sala: z.string().trim().optional(),
 });
+
+export const chamarNovamenteSchema = z.object({
+  sala: z.string().trim().optional(),
+});
