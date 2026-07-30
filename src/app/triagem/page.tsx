@@ -4,10 +4,14 @@ import { TriagemForm } from "@/components/TriagemForm";
 export const dynamic = "force-dynamic";
 
 export default async function TriagemPage() {
-  const [unidades, especialidades, prioridades] = await Promise.all([
+  const [unidades, especialidades, prioridades, vinculos] = await Promise.all([
     prisma.unidade.findMany({ orderBy: { nome: "asc" } }),
     prisma.especialidade.findMany({ orderBy: { nome: "asc" } }),
     prisma.prioridade.findMany({ orderBy: { peso: "desc" } }),
+    prisma.profissionalUnidadeEspecialidade.findMany({
+      select: { unidadeId: true, especialidadeId: true },
+      distinct: ["unidadeId", "especialidadeId"],
+    }),
   ]);
 
   return (
@@ -18,7 +22,12 @@ export default async function TriagemPage() {
       </p>
 
       <div className="mt-8">
-        <TriagemForm unidades={unidades} especialidades={especialidades} prioridades={prioridades} />
+        <TriagemForm
+          unidades={unidades}
+          especialidades={especialidades}
+          prioridades={prioridades}
+          vinculos={vinculos}
+        />
       </div>
     </div>
   );

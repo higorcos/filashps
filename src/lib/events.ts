@@ -7,6 +7,7 @@ export type PainelEvento = {
   senha: string;
   sala: string | null;
   especialidade: string;
+  pacienteNome: string;
   chamadoEm: string;
 };
 

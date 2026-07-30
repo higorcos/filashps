@@ -10,7 +10,7 @@ async function obterHistorico(unidadeId: string) {
     where: { fila: { triagem: { unidadeId } } },
     orderBy: { chamadoEm: "desc" },
     take: 10,
-    include: { fila: { include: { especialidade: true } } },
+    include: { fila: { include: { especialidade: true, triagem: { include: { paciente: true } } } } },
   });
 
   return chamadas.map((c) => ({
@@ -20,6 +20,7 @@ async function obterHistorico(unidadeId: string) {
     senha: c.fila.senha,
     sala: c.fila.sala,
     especialidade: c.fila.especialidade.nome,
+    pacienteNome: c.fila.triagem.paciente.nomeCompleto,
     chamadoEm: c.chamadoEm.toISOString(),
   }));
 }

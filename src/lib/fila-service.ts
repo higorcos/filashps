@@ -129,7 +129,7 @@ function notificarPainel(fila: {
   sala: string | null;
   chamadoEm: Date | null;
   especialidade: { nome: string };
-  triagem: { unidadeId: string };
+  triagem: { unidadeId: string; paciente: { nomeCompleto: string } };
 }) {
   emitirEventoPainel({
     tipo: "chamada",
@@ -138,6 +138,7 @@ function notificarPainel(fila: {
     senha: fila.senha,
     sala: fila.sala,
     especialidade: fila.especialidade.nome,
+    pacienteNome: fila.triagem.paciente.nomeCompleto,
     chamadoEm: (fila.chamadoEm ?? new Date()).toISOString(),
   });
 }

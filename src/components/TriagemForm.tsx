@@ -7,10 +7,13 @@ import { triagemSchema } from "@/lib/validation";
 import { calcularIdade } from "@/lib/idade";
 import { GLICEMIA_MIN, GLICEMIA_MAX, IDADE_PRIORIDADE_IDOSO } from "@/lib/constants";
 
+type Vinculo = { unidadeId: string; especialidadeId: string };
+
 type Props = {
   unidades: Unidade[];
   especialidades: Especialidade[];
   prioridades: Prioridade[];
+  vinculos: Vinculo[];
 };
 
 type FormState = {
@@ -41,7 +44,7 @@ const estadoInicial: FormState = {
   criadoPor: "",
 };
 
-export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
+export function TriagemForm({ unidades, especialidades, prioridades, vinculos }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<FormState>(estadoInicial);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
@@ -65,6 +68,14 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
   }, [idade, prioridades]);
 
   const prioridadeEfetiva = form.prioridadeId || prioridadeSugeridaId;
+
+  const especialidadesDaUnidade = useMemo(() => {
+    if (!form.unidadeId) return [];
+    const idsDaUnidade = new Set(
+      vinculos.filter((v) => v.unidadeId === form.unidadeId).map((v) => v.especialidadeId),
+    );
+    return especialidades.filter((esp) => idsDaUnidade.has(esp.id));
+  }, [especialidades, vinculos, form.unidadeId]);
 
   const payload = useMemo(
     () => ({
@@ -224,7 +235,7 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
         <Campo label="Unidade" erro={erroDoCampo("unidadeId")}>
           <select
             value={form.unidadeId}
-            onChange={(e) => setForm((f) => ({ ...f, unidadeId: e.target.value }))}
+            onChange={(e) => setForm((f) => ({ ...f, unidadeId: e.target.value, especialidadeIds: [] }))}
             onBlur={() => marcarTocado("unidadeId")}
             className={inputClass(erroDoCampo("unidadeId"))}
           >
@@ -239,27 +250,35 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
       </div>
 
       <Campo label="Especialidade(s)" erro={erroDoCampo("especialidadeIds")}>
-        <div className="flex flex-wrap gap-3">
-          {especialidades.map((esp) => (
-            <label
-              key={esp.id}
-              className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
-                form.especialidadeIds.includes(esp.id)
-                  ? "border-brand-500 bg-brand-50 text-brand-800"
-                  : "border-slate-300 text-slate-700"
-              }`}
-            >
-              <input
-                type="checkbox"
-                className="accent-brand-600"
-                checked={form.especialidadeIds.includes(esp.id)}
-                onChange={() => alternarEspecialidade(esp.id)}
-                onBlur={() => marcarTocado("especialidadeIds")}
-              />
-              {esp.nome}
-            </label>
-          ))}
-        </div>
+        {!form.unidadeId ? (
+          <p className="text-sm text-slate-500">Selecione a unidade para ver as especialidades disponíveis.</p>
+        ) : especialidadesDaUnidade.length === 0 ? (
+          <p className="text-sm text-amber-600">
+            Nenhuma especialidade vinculada a esta unidade ainda. Cadastre um vínculo em Administração.
+          </p>
+        ) : (
+          <div className="flex flex-wrap gap-3">
+            {especialidadesDaUnidade.map((esp) => (
+              <label
+                key={esp.id}
+                className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
+                  form.especialidadeIds.includes(esp.id)
+                    ? "border-brand-500 bg-brand-50 text-brand-800"
+                    : "border-slate-300 text-slate-700"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="accent-brand-600"
+                  checked={form.especialidadeIds.includes(esp.id)}
+                  onChange={() => alternarEspecialidade(esp.id)}
+                  onBlur={() => marcarTocado("especialidadeIds")}
+                />
+                {esp.nome}
+              </label>
+            ))}
+          </div>
+        )}
       </Campo>
 
       <Campo label="Prioridade" erro={erroDoCampo("prioridadeId")}>

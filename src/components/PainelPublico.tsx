@@ -9,6 +9,7 @@ type EventoChamada = {
   senha: string;
   sala: string | null;
   especialidade: string;
+  pacienteNome: string;
   chamadoEm: string;
 };
 
@@ -56,7 +57,9 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
         return;
       }
 
-      const destino = dados.sala ? `Senha ${dados.senha}, comparecer à sala ${dados.sala}` : `Senha ${dados.senha}, comparecer à recepção`;
+      const destino = dados.sala
+        ? `${dados.pacienteNome}, comparecer à sala ${dados.sala}`
+        : `${dados.pacienteNome}, comparecer à recepção`;
       falar(destino);
     });
 
@@ -74,7 +77,10 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
         {atual ? (
           <div className="text-center">
             <p className="text-lg uppercase tracking-[0.3em] text-brand-300">{atual.especialidade}</p>
-            <p className="mt-4 text-[clamp(4rem,16vw,12rem)] font-bold leading-none tabular-nums text-white">
+            <p className="mt-4 text-[clamp(2.5rem,8vw,6rem)] font-bold leading-tight text-white">
+              {atual.pacienteNome}
+            </p>
+            <p className="mt-3 inline-block rounded-lg bg-brand-900 px-4 py-1 text-[clamp(1.25rem,3vw,2rem)] font-bold tabular-nums text-brand-200">
               {atual.senha}
             </p>
             <p className="mt-6 text-[clamp(1.5rem,4vw,3rem)] font-semibold text-brand-400">
@@ -96,7 +102,10 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
               key={`${c.filaId}-${c.chamadoEm}-${i}`}
               className="rounded-xl border border-brand-800 bg-brand-900 px-4 py-3"
             >
-              <p className="text-xl font-bold tabular-nums text-white">{c.senha}</p>
+              <p className="truncate text-base font-bold text-white" title={c.pacienteNome}>
+                {c.pacienteNome}
+              </p>
+              <p className="text-xs tabular-nums text-brand-300">{c.senha}</p>
               <p className="text-xs text-brand-300">{c.sala ? `Sala ${c.sala}` : "Recepção"}</p>
               <p className="text-xs text-brand-400">{formatarHorario(c.chamadoEm)}</p>
             </div>
