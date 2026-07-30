@@ -1,8 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  --background: #f4f7fd;
+  --foreground: #16213e;
 }
 
 @theme inline {
@@ -10,13 +12,23 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Paleta azul minimalista (inspirada no Skydash) usada em todo o app */
+  --color-brand-50: #eef4ff;
+  --color-brand-100: #dce8ff;
+  --color-brand-200: #b9d1ff;
+  --color-brand-300: #8bb0ff;
+  --color-brand-400: #5c8bfa;
+  --color-brand-500: #3d6bf0;
+  --color-brand-600: #2f54d6;
+  --color-brand-700: #2743ac;
+  --color-brand-800: #1f3585;
+  --color-brand-900: #1b2a52;
+  --color-brand-950: #101a38;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  color-scheme: light;
 }
 
 body {

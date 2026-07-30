@@ -104,7 +104,7 @@ export function VinculosAdmin({
             <select
               value={profissionalId}
               onChange={(e) => setProfissionalId(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">Selecione...</option>
               {profissionais.map((p) => (
@@ -119,7 +119,7 @@ export function VinculosAdmin({
             <select
               value={unidadeId}
               onChange={(e) => setUnidadeId(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">Selecione...</option>
               {unidades.map((u) => (
@@ -134,7 +134,7 @@ export function VinculosAdmin({
             <select
               value={especialidadeId}
               onChange={(e) => setEspecialidadeId(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">Selecione...</option>
               {especialidades.map((esp) => (
@@ -148,7 +148,7 @@ export function VinculosAdmin({
         <button
           type="submit"
           disabled={salvando || !profissionalId || !unidadeId || !especialidadeId}
-          className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
+          className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
         >
           Adicionar vínculo
         </button>

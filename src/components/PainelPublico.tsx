@@ -64,41 +64,41 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
   }, [unidadeId]);
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] flex-col bg-slate-950 px-6 py-8 text-white sm:px-12">
+    <div className="flex min-h-screen flex-col bg-brand-950 px-6 py-8 text-white sm:px-12">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-semibold text-slate-300">{unidadeNome}</h1>
-        <span className="text-sm text-slate-500">Painel de chamadas</span>
+        <h1 className="text-2xl font-semibold text-brand-200">{unidadeNome}</h1>
+        <span className="text-sm text-brand-400">Painel de chamadas</span>
       </header>
 
       <div className="flex flex-1 flex-col items-center justify-center py-10">
         {atual ? (
           <div className="text-center">
-            <p className="text-lg uppercase tracking-[0.3em] text-slate-400">{atual.especialidade}</p>
+            <p className="text-lg uppercase tracking-[0.3em] text-brand-300">{atual.especialidade}</p>
             <p className="mt-4 text-[clamp(4rem,16vw,12rem)] font-bold leading-none tabular-nums text-white">
               {atual.senha}
             </p>
-            <p className="mt-6 text-[clamp(1.5rem,4vw,3rem)] font-semibold text-blue-400">
+            <p className="mt-6 text-[clamp(1.5rem,4vw,3rem)] font-semibold text-brand-400">
               {atual.sala ? `Sala ${atual.sala}` : "Recepção"}
             </p>
           </div>
         ) : (
-          <p className="text-2xl text-slate-500">Aguardando a primeira chamada...</p>
+          <p className="text-2xl text-brand-400">Aguardando a primeira chamada...</p>
         )}
       </div>
 
       <div>
-        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
+        <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-brand-400">
           Últimas chamadas
         </h2>
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
           {historico.slice(0, 10).map((c, i) => (
             <div
               key={`${c.filaId}-${c.chamadoEm}-${i}`}
-              className="rounded-xl border border-slate-800 bg-slate-900 px-4 py-3"
+              className="rounded-xl border border-brand-800 bg-brand-900 px-4 py-3"
             >
               <p className="text-xl font-bold tabular-nums text-white">{c.senha}</p>
-              <p className="text-xs text-slate-400">{c.sala ? `Sala ${c.sala}` : "Recepção"}</p>
-              <p className="text-xs text-slate-500">{formatarHorario(c.chamadoEm)}</p>
+              <p className="text-xs text-brand-300">{c.sala ? `Sala ${c.sala}` : "Recepção"}</p>
+              <p className="text-xs text-brand-400">{formatarHorario(c.chamadoEm)}</p>
             </div>
           ))}
         </div>

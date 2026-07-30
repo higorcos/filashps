@@ -81,7 +81,7 @@ export function MedicoSelecao({ vinculos }: { vinculos: Vinculo[] }) {
             setUnidadeId("");
             setEspecialidadeId("");
           }}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         >
           <option value="">Selecione...</option>
           {profissionais.map((p) => (
@@ -101,7 +101,7 @@ export function MedicoSelecao({ vinculos }: { vinculos: Vinculo[] }) {
             setUnidadeId(e.target.value);
             setEspecialidadeId("");
           }}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:bg-slate-100"
         >
           <option value="">Selecione...</option>
           {unidadesDisponiveis.map((u) => (
@@ -118,7 +118,7 @@ export function MedicoSelecao({ vinculos }: { vinculos: Vinculo[] }) {
           value={especialidadeId}
           disabled={!unidadeId}
           onChange={(e) => setEspecialidadeId(e.target.value)}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-slate-100"
+          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:bg-slate-100"
         >
           <option value="">Selecione...</option>
           {especialidadesDisponiveis.map((e) => (
@@ -133,7 +133,7 @@ export function MedicoSelecao({ vinculos }: { vinculos: Vinculo[] }) {
         type="button"
         disabled={!podeContinuar}
         onClick={continuar}
-        className="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
+        className="w-full rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
       >
         Entrar no painel
       </button>

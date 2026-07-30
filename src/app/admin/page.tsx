@@ -23,7 +23,7 @@ export default async function AdminOverviewPage() {
     <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
       {itens.map((item) => (
         <div key={item.label} className="rounded-xl border border-slate-200 bg-white p-5 text-center shadow-sm">
-          <p className="text-3xl font-bold text-slate-900">{item.valor}</p>
+          <p className="text-3xl font-bold text-brand-950">{item.valor}</p>
           <p className="mt-1 text-sm text-slate-500">{item.label}</p>
         </div>
       ))}

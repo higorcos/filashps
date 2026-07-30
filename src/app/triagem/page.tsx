@@ -12,7 +12,7 @@ export default async function TriagemPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">Triagem / Cadastro</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-brand-950">Triagem / Cadastro</h1>
       <p className="mt-1 text-sm text-slate-600">
         Registre o paciente, colete os sinais vitais e gere a senha de atendimento.
       </p>

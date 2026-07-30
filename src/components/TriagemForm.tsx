@@ -168,20 +168,20 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
 
   if (resultado) {
     return (
-      <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
-        <h2 className="text-lg font-semibold text-emerald-900">Triagem registrada com sucesso</h2>
+      <div className="rounded-2xl border border-brand-200 bg-brand-50 p-8 text-center">
+        <h2 className="text-lg font-semibold text-brand-900">Triagem registrada com sucesso</h2>
         <div className="mt-6 flex flex-wrap justify-center gap-4">
           {resultado.map((r) => (
-            <div key={r.senha} className="rounded-xl border border-emerald-300 bg-white px-6 py-4 shadow-sm">
-              <p className="text-xs uppercase tracking-wide text-slate-500">{r.especialidade}</p>
-              <p className="mt-1 text-4xl font-bold tabular-nums text-emerald-700">{r.senha}</p>
+            <div key={r.senha} className="rounded-xl border border-brand-300 bg-white px-6 py-4 shadow-sm">
+              <p className="text-xs uppercase tracking-wide text-brand-700/60">{r.especialidade}</p>
+              <p className="mt-1 text-4xl font-bold tabular-nums text-brand-700">{r.senha}</p>
             </div>
           ))}
         </div>
         <button
           type="button"
           onClick={() => setResultado(null)}
-          className="mt-8 rounded-lg bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-800"
+          className="mt-8 rounded-lg bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700"
         >
           Nova triagem
         </button>
@@ -245,13 +245,13 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
               key={esp.id}
               className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${
                 form.especialidadeIds.includes(esp.id)
-                  ? "border-blue-500 bg-blue-50 text-blue-800"
+                  ? "border-brand-500 bg-brand-50 text-brand-800"
                   : "border-slate-300 text-slate-700"
               }`}
             >
               <input
                 type="checkbox"
-                className="accent-blue-600"
+                className="accent-brand-600"
                 checked={form.especialidadeIds.includes(esp.id)}
                 onChange={() => alternarEspecialidade(esp.id)}
                 onBlur={() => marcarTocado("especialidadeIds")}
@@ -277,7 +277,7 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
           ))}
         </select>
         {idade !== null && idade >= IDADE_PRIORIDADE_IDOSO && (
-          <p className="mt-1 text-xs text-blue-600">
+          <p className="mt-1 text-xs text-brand-600">
             Sugestão automática: paciente com 60 anos ou mais — prioridade &quot;Idoso&quot;.
           </p>
         )}
@@ -352,7 +352,7 @@ export function TriagemForm({ unidades, especialidades, prioridades }: Props) {
       <button
         type="submit"
         disabled={submetendo}
-        className="w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-60"
+        className="w-full rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-60"
       >
         {submetendo ? "Registrando..." : "Registrar triagem e gerar senha"}
       </button>
@@ -384,7 +384,7 @@ function Campo({
 }
 
 function inputClass(erro?: string) {
-  return `w-full rounded-lg border px-3 py-2 text-sm text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+  return `w-full rounded-lg border px-3 py-2 text-sm text-brand-950 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500 ${
     erro ? "border-red-400" : "border-slate-300"
   }`;
 }

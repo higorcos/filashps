@@ -11,7 +11,7 @@ export default async function MedicoPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6 lg:px-8">
-      <h1 className="text-2xl font-bold tracking-tight text-slate-900">Painel do profissional</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-brand-950">Painel do profissional</h1>
       <p className="mt-1 text-sm text-slate-600">
         Selecione quem você é e em qual unidade/especialidade você está atuando agora.
       </p>

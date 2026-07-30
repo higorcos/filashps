@@ -93,7 +93,7 @@ export function EntityAdmin<T extends Item>({
                   </td>
                 ))}
                 <td className="space-x-3 px-4 py-2 text-right">
-                  <button onClick={() => iniciarEdicao(item)} className="text-blue-700 hover:underline">
+                  <button onClick={() => iniciarEdicao(item)} className="text-brand-600 hover:underline">
                     Editar
                   </button>
                   <button onClick={() => excluir(item.id)} className="text-red-600 hover:underline">
@@ -126,7 +126,7 @@ export function EntityAdmin<T extends Item>({
                 type={f.type ?? "text"}
                 value={form[f.key] ?? ""}
                 onChange={(e) => setForm((s) => ({ ...s, [f.key]: e.target.value }))}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
             </div>
           ))}
@@ -135,7 +135,7 @@ export function EntityAdmin<T extends Item>({
           <button
             type="submit"
             disabled={salvando}
-            className="rounded-lg bg-blue-700 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
+            className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
           >
             {editandoId ? "Salvar alterações" : "Adicionar"}
           </button>

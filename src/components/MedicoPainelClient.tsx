@@ -103,7 +103,7 @@ export function MedicoPainelClient() {
         <p className="text-sm text-slate-600">
           Selecione um profissional, unidade e especialidade para continuar.
         </p>
-        <Link href="/medico" className="mt-4 inline-block text-sm font-semibold text-blue-700 underline">
+        <Link href="/medico" className="mt-4 inline-block text-sm font-semibold text-brand-600 underline">
           Voltar para seleção
         </Link>
       </div>
@@ -116,12 +116,12 @@ export function MedicoPainelClient() {
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900">{especialidadeNome}</h1>
+          <h1 className="text-2xl font-bold tracking-tight text-brand-950">{especialidadeNome}</h1>
           <p className="text-sm text-slate-600">
             {profissionalNome} — {unidadeNome}
           </p>
         </div>
-        <Link href="/medico" className="text-sm font-medium text-blue-700 hover:underline">
+        <Link href="/medico" className="text-sm font-medium text-brand-600 hover:underline">
           Trocar seleção
         </Link>
       </div>
@@ -139,15 +139,15 @@ export function MedicoPainelClient() {
           value={sala}
           onChange={(e) => setSala(e.target.value)}
           placeholder="Ex: Consultório 3"
-          className="w-full max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full max-w-xs rounded-lg border border-slate-300 px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
 
         {meuAtendimento ? (
-          <div className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
-            <p className="text-xs font-medium uppercase tracking-wide text-blue-700">
+          <div className="mt-6 rounded-xl border border-brand-200 bg-brand-50 p-5">
+            <p className="text-xs font-medium uppercase tracking-wide text-brand-600">
               {STATUS_LABEL[meuAtendimento.status]}
             </p>
-            <p className="mt-1 text-3xl font-bold tabular-nums text-blue-900">{meuAtendimento.senha}</p>
+            <p className="mt-1 text-3xl font-bold tabular-nums text-brand-900">{meuAtendimento.senha}</p>
             <p className="mt-1 text-sm text-slate-700">
               {meuAtendimento.triagem.paciente.nomeCompleto} · Prioridade: {meuAtendimento.prioridade.nome}
               {meuAtendimento.tentativasChamada > 0 && ` · Tentativas: ${meuAtendimento.tentativasChamada}`}
@@ -165,7 +165,7 @@ export function MedicoPainelClient() {
                   <button
                     disabled={carregando}
                     onClick={() => iniciar(meuAtendimento.id)}
-                    className="rounded-lg bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800 disabled:opacity-50"
+                    className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
                   >
                     Iniciar atendimento
                   </button>
@@ -174,7 +174,7 @@ export function MedicoPainelClient() {
               <button
                 disabled={carregando}
                 onClick={() => finalizar(meuAtendimento.id)}
-                className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 disabled:opacity-50"
+                className="rounded-lg bg-brand-900 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-950 disabled:opacity-50"
               >
                 Dar baixa / Finalizar
               </button>
@@ -184,7 +184,7 @@ export function MedicoPainelClient() {
           <button
             disabled={carregando || !fila || fila.aguardando.length === 0}
             onClick={chamarProximo}
-            className="mt-6 w-full rounded-lg bg-blue-700 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-800 disabled:opacity-50"
+            className="mt-6 w-full rounded-lg bg-brand-600 px-5 py-3 text-sm font-semibold text-white hover:bg-brand-700 disabled:opacity-50"
           >
             Chamar próximo
           </button>
@@ -192,7 +192,7 @@ export function MedicoPainelClient() {
       </div>
 
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-brand-950">
           Fila de espera {fila ? `(${fila.aguardando.length})` : ""}
         </h2>
         <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
@@ -228,7 +228,7 @@ export function MedicoPainelClient() {
 
       {fila && fila.emAndamento.filter((f) => f.id !== meuAtendimento?.id).length > 0 && (
         <div className="mt-8">
-          <h2 className="text-lg font-semibold text-slate-900">Em atendimento por outros profissionais</h2>
+          <h2 className="text-lg font-semibold text-brand-950">Em atendimento por outros profissionais</h2>
           <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white">
             <table className="w-full text-left text-sm">
               <thead className="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
