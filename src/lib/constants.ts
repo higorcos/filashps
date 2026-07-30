@@ -21,6 +21,9 @@ export const TIMEOUT_CHAMADA_MINUTOS = Number(process.env.TIMEOUT_CHAMADA_MINUTO
 export const GLICEMIA_MIN = 20;
 export const GLICEMIA_MAX = 600;
 
+export const PESO_MIN = 1;
+export const PESO_MAX = 300;
+
 export const IDADE_PRIORIDADE_IDOSO = 60;
 
 export const COMORBIDADES_COMUNS = [

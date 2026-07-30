@@ -5,7 +5,14 @@ import { useRouter } from "next/navigation";
 import type { Unidade, Especialidade, Prioridade } from "@/generated/prisma/client";
 import { triagemSchema } from "@/lib/validation";
 import { calcularIdade } from "@/lib/idade";
-import { COMORBIDADES_COMUNS, GLICEMIA_MIN, GLICEMIA_MAX, IDADE_PRIORIDADE_IDOSO } from "@/lib/constants";
+import {
+  COMORBIDADES_COMUNS,
+  GLICEMIA_MIN,
+  GLICEMIA_MAX,
+  PESO_MIN,
+  PESO_MAX,
+  IDADE_PRIORIDADE_IDOSO,
+} from "@/lib/constants";
 
 type Vinculo = { unidadeId: string; especialidadeId: string };
 
@@ -26,6 +33,7 @@ type FormState = {
   observacoes: string;
   pressao: string;
   glicemia: string;
+  pesoKg: string;
   criadoPor: string;
 };
 
@@ -39,6 +47,7 @@ const estadoInicial: FormState = {
   observacoes: "",
   pressao: "",
   glicemia: "",
+  pesoKg: "",
   criadoPor: "",
 };
 
@@ -95,6 +104,7 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
       observacoes: form.observacoes,
       pressao: form.pressao,
       glicemia: form.glicemia === "" ? undefined : form.glicemia,
+      pesoKg: form.pesoKg === "" ? undefined : form.pesoKg,
       criadoPor: form.criadoPor,
     }),
     [form, prioridadeEfetiva, comorbidadesTexto],
@@ -141,6 +151,13 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
     (() => {
       const valor = Number(form.glicemia);
       return !Number.isNaN(valor) && (valor < GLICEMIA_MIN || valor > GLICEMIA_MAX);
+    })();
+
+  const pesoForaDaFaixa =
+    form.pesoKg !== "" &&
+    (() => {
+      const valor = Number(form.pesoKg);
+      return !Number.isNaN(valor) && (valor < PESO_MIN || valor > PESO_MAX);
     })();
 
   async function handleSubmit(e: React.FormEvent) {
@@ -316,7 +333,7 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
         )}
       </Campo>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
         <Campo label="Pressão arterial" erro={erroDoCampo("pressao")} opcional>
           <input
             type="text"
@@ -339,6 +356,22 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
           {glicemiaForaDaFaixa && (
             <p className="mt-1 text-xs text-amber-600">
               Valor fora da faixa usual ({GLICEMIA_MIN}–{GLICEMIA_MAX} mg/dL). O cadastro não será bloqueado.
+            </p>
+          )}
+        </Campo>
+
+        <Campo label="Peso (kg)" opcional>
+          <input
+            type="number"
+            step="0.1"
+            value={form.pesoKg}
+            onChange={(e) => setForm((f) => ({ ...f, pesoKg: e.target.value }))}
+            className={inputClass()}
+            placeholder="70"
+          />
+          {pesoForaDaFaixa && (
+            <p className="mt-1 text-xs text-amber-600">
+              Valor fora da faixa usual ({PESO_MIN}–{PESO_MAX} kg). O cadastro não será bloqueado.
             </p>
           )}
         </Campo>

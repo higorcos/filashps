@@ -17,6 +17,7 @@ export type FilaComDetalhes = {
     observacoes: string | null;
     pressao: string | null;
     glicemia: number | null;
+    pesoKg: number | null;
     criadoPor: string;
     criadoEm: string;
     paciente: { id: string; nomeCompleto: string; dataNascimento: string };

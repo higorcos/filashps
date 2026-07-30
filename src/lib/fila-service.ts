@@ -41,6 +41,7 @@ export async function criarTriagemComFilas(input: TriagemInput) {
         observacoes: input.observacoes || null,
         pressao: input.pressao || null,
         glicemia: input.glicemia ?? null,
+        pesoKg: input.pesoKg ?? null,
         criadoPor: input.criadoPor,
       },
     });

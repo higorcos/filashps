@@ -26,6 +26,7 @@ export const triagemSchema = z.object({
     .optional()
     .or(z.literal("")),
   glicemia: z.coerce.number().int().optional(),
+  pesoKg: z.coerce.number().positive().optional(),
   criadoPor: z.string().trim().min(1, "Informe quem realizou a triagem"),
 });
 

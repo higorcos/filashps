@@ -320,6 +320,11 @@ function TriagemDetalhes({ triagem }: { triagem: FilaComDetalhes["triagem"] }) {
             <span className="text-slate-500">Glicemia:</span> {triagem.glicemia} mg/dL
           </span>
         )}
+        {triagem.pesoKg != null && (
+          <span>
+            <span className="text-slate-500">Peso:</span> {triagem.pesoKg} kg
+          </span>
+        )}
         <span>
           <span className="text-slate-500">Triagem por:</span> {triagem.criadoPor}
         </span>

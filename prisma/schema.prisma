@@ -86,6 +86,7 @@ model Triagem {
   observacoes  String?
   pressao      String?
   glicemia     Int?
+  pesoKg       Float?
   criadoEm     DateTime @default(now())
   criadoPor    String
 
