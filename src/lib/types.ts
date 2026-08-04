@@ -20,7 +20,7 @@ export type FilaComDetalhes = {
     pesoKg: number | null;
     criadoPor: string;
     criadoEm: string;
-    paciente: { id: string; nomeCompleto: string; dataNascimento: string };
+    paciente: { id: string; nomeCompleto: string; dataNascimento: string; telefone: string | null };
   };
   chamadas: { id: string; chamadoEm: string; resultado: string }[];
 };

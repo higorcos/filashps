@@ -26,6 +26,8 @@ export const PESO_MAX = 300;
 
 export const IDADE_PRIORIDADE_IDOSO = 60;
 
+export const TELEFONE_DIGITOS_MIN = 8;
+
 export const COMORBIDADES_COMUNS = [
   "Hipertensão",
   "Diabetes",

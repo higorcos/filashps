@@ -70,6 +70,7 @@ model Paciente {
   id             String   @id @default(cuid())
   nomeCompleto   String
   dataNascimento DateTime
+  telefone       String?
   criadoEm       DateTime @default(now())
 
   triagens Triagem[]

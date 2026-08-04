@@ -310,6 +310,11 @@ function TriagemDetalhes({ triagem }: { triagem: FilaComDetalhes["triagem"] }) {
         <span>
           <span className="text-slate-500">Idade:</span> {idade} anos
         </span>
+        {triagem.paciente.telefone && (
+          <span>
+            <span className="text-slate-500">Telefone:</span> {triagem.paciente.telefone}
+          </span>
+        )}
         {triagem.pressao && (
           <span>
             <span className="text-slate-500">Pressão:</span> {triagem.pressao}

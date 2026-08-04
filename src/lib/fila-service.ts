@@ -29,6 +29,7 @@ export async function criarTriagemComFilas(input: TriagemInput) {
       data: {
         nomeCompleto: input.nomeCompleto,
         dataNascimento: input.dataNascimento,
+        telefone: input.telefone || null,
       },
     });
 

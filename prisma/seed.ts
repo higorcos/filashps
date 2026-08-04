@@ -23,30 +23,30 @@ async function main() {
 
   const [upaCentral, ubsJardim] = await Promise.all([
     prisma.unidade.create({
-      data: { nome: "UPA Central", endereco: "Av. Principal, 1000 - Centro" },
+      data: { nome: "UPA CENTRAL", endereco: "Av. Principal, 1000 - Centro" },
     }),
     prisma.unidade.create({
-      data: { nome: "UBS Jardim das Flores", endereco: "Rua das Flores, 250 - Jardim das Flores" },
+      data: { nome: "UBS JARDIM DAS FLORES", endereco: "Rua das Flores, 250 - Jardim das Flores" },
     }),
   ]);
 
   const [clinicaGeral, cardiologia, pediatria] = await Promise.all([
-    prisma.especialidade.create({ data: { nome: "Clínica Geral", codigoSenha: "G" } }),
-    prisma.especialidade.create({ data: { nome: "Cardiologia", codigoSenha: "C" } }),
-    prisma.especialidade.create({ data: { nome: "Pediatria", codigoSenha: "P" } }),
+    prisma.especialidade.create({ data: { nome: "CLÍNICA GERAL", codigoSenha: "G" } }),
+    prisma.especialidade.create({ data: { nome: "CARDIOLOGIA", codigoSenha: "C" } }),
+    prisma.especialidade.create({ data: { nome: "PEDIATRIA", codigoSenha: "P" } }),
   ]);
 
   const [, idoso, gestante, urgencia] = await Promise.all([
-    prisma.prioridade.create({ data: { nome: "Normal", peso: 0 } }),
-    prisma.prioridade.create({ data: { nome: "Idoso", peso: 10 } }),
-    prisma.prioridade.create({ data: { nome: "Gestante", peso: 10 } }),
-    prisma.prioridade.create({ data: { nome: "Urgência", peso: 20 } }),
+    prisma.prioridade.create({ data: { nome: "NORMAL", peso: 0 } }),
+    prisma.prioridade.create({ data: { nome: "IDOSO", peso: 10 } }),
+    prisma.prioridade.create({ data: { nome: "GESTANTE", peso: 10 } }),
+    prisma.prioridade.create({ data: { nome: "URGÊNCIA", peso: 20 } }),
   ]);
 
   const [anaSouza, brunoLima, carlaMendes] = await Promise.all([
-    prisma.profissional.create({ data: { nome: "Dra. Ana Souza", registro: "CRM 12345-SP" } }),
-    prisma.profissional.create({ data: { nome: "Dr. Bruno Lima", registro: "CRM 54321-SP" } }),
-    prisma.profissional.create({ data: { nome: "Dra. Carla Mendes", registro: "CRM 67890-SP" } }),
+    prisma.profissional.create({ data: { nome: "DRA. ANA SOUZA", registro: "CRM 12345-SP" } }),
+    prisma.profissional.create({ data: { nome: "DR. BRUNO LIMA", registro: "CRM 54321-SP" } }),
+    prisma.profissional.create({ data: { nome: "DRA. CARLA MENDES", registro: "CRM 67890-SP" } }),
   ]);
 
   // Ana atua em duas especialidades na mesma unidade
@@ -72,7 +72,7 @@ async function main() {
 
   // Paciente 1: idosa aguardando na Clínica Geral (UPA Central)
   const maria = await prisma.paciente.create({
-    data: { nomeCompleto: "Maria Oliveira Santos", dataNascimento: new Date("1955-03-10") },
+    data: { nomeCompleto: "MARIA OLIVEIRA SANTOS", dataNascimento: new Date("1955-03-10"), telefone: "(11) 98765-4321" },
   });
   const triagemMaria = await prisma.triagem.create({
     data: {
@@ -82,7 +82,7 @@ async function main() {
       glicemia: 102,
       pesoKg: 68.5,
       observacoes: "Queixa de dor de cabeça e tontura",
-      criadoPor: "Recepção UPA Central",
+      criadoPor: "RECEPÇÃO UPA CENTRAL",
     },
   });
   await prisma.fila.create({
@@ -97,7 +97,7 @@ async function main() {
 
   // Paciente 2: em urgência, já chamado para Cardiologia (UPA Central)
   const joao = await prisma.paciente.create({
-    data: { nomeCompleto: "João Pedro Alves", dataNascimento: new Date("1990-07-22") },
+    data: { nomeCompleto: "JOÃO PEDRO ALVES", dataNascimento: new Date("1990-07-22"), telefone: "(11) 91234-5678" },
   });
   const triagemJoao = await prisma.triagem.create({
     data: {
@@ -108,7 +108,7 @@ async function main() {
       pesoKg: 89.2,
       comorbidades: "Hipertensão",
       observacoes: "Dor no peito",
-      criadoPor: "Recepção UPA Central",
+      criadoPor: "RECEPÇÃO UPA CENTRAL",
     },
   });
   const filaJoao = await prisma.fila.create({
@@ -129,7 +129,7 @@ async function main() {
 
   // Paciente 3: atendimento já finalizado na Cardiologia (UBS Jardim das Flores)
   const beatriz = await prisma.paciente.create({
-    data: { nomeCompleto: "Beatriz Fernandes Costa", dataNascimento: new Date("2001-01-15") },
+    data: { nomeCompleto: "BEATRIZ FERNANDES COSTA", dataNascimento: new Date("2001-01-15"), telefone: "(11) 99876-5432" },
   });
   const triagemBeatriz = await prisma.triagem.create({
     data: {
@@ -139,7 +139,7 @@ async function main() {
       glicemia: 88,
       pesoKg: 61.0,
       observacoes: "Gestante, consulta de rotina",
-      criadoPor: "Recepção UBS Jardim das Flores",
+      criadoPor: "RECEPÇÃO UBS JARDIM DAS FLORES",
     },
   });
   const chamadoEmBeatriz = new Date(Date.now() - 2 * 60 * 60 * 1000);

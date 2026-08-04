@@ -12,6 +12,7 @@ import {
   PESO_MIN,
   PESO_MAX,
   IDADE_PRIORIDADE_IDOSO,
+  TELEFONE_DIGITOS_MIN,
 } from "@/lib/constants";
 
 type Vinculo = { unidadeId: string; especialidadeId: string };
@@ -25,6 +26,7 @@ type Props = {
 
 type FormState = {
   nomeCompleto: string;
+  telefone: string;
   dataNascimento: string;
   unidadeId: string;
   especialidadeIds: string[];
@@ -39,6 +41,7 @@ type FormState = {
 
 const estadoInicial: FormState = {
   nomeCompleto: "",
+  telefone: "",
   dataNascimento: "",
   unidadeId: "",
   especialidadeIds: [],
@@ -72,8 +75,8 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
   // até que o atendente escolha manualmente, para não sobrescrever uma escolha já feita
   const prioridadeSugeridaId = useMemo(() => {
     if (idade === null || prioridades.length === 0) return "";
-    const nomeAlvo = idade >= IDADE_PRIORIDADE_IDOSO ? "Idoso" : "Normal";
-    return prioridades.find((p) => p.nome === nomeAlvo)?.id ?? "";
+    const nomeAlvo = idade >= IDADE_PRIORIDADE_IDOSO ? "idoso" : "normal";
+    return prioridades.find((p) => p.nome.toLowerCase() === nomeAlvo)?.id ?? "";
   }, [idade, prioridades]);
 
   const prioridadeEfetiva = form.prioridadeId || prioridadeSugeridaId;
@@ -95,6 +98,7 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
   const payload = useMemo(
     () => ({
       nomeCompleto: form.nomeCompleto,
+      telefone: form.telefone,
       dataNascimento: form.dataNascimento,
       unidadeId: form.unidadeId,
       especialidadeIds: form.especialidadeIds,
@@ -159,6 +163,9 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
       const valor = Number(form.pesoKg);
       return !Number.isNaN(valor) && (valor < PESO_MIN || valor > PESO_MAX);
     })();
+
+  const telefoneIncompleto =
+    form.telefone.trim() !== "" && form.telefone.replace(/\D/g, "").length < TELEFONE_DIGITOS_MIN;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -239,16 +246,31 @@ export function TriagemForm({ unidades, especialidades, prioridades, vinculos }:
         </div>
       )}
 
-      <Campo label="Nome completo" erro={erroDoCampo("nomeCompleto")}>
-        <input
-          type="text"
-          value={form.nomeCompleto}
-          onChange={(e) => setForm((f) => ({ ...f, nomeCompleto: e.target.value }))}
-          onBlur={() => marcarTocado("nomeCompleto")}
-          className={inputClass(erroDoCampo("nomeCompleto"))}
-          placeholder="Nome e sobrenome"
-        />
-      </Campo>
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <Campo label="Nome completo" erro={erroDoCampo("nomeCompleto")}>
+          <input
+            type="text"
+            value={form.nomeCompleto}
+            onChange={(e) => setForm((f) => ({ ...f, nomeCompleto: e.target.value }))}
+            onBlur={() => marcarTocado("nomeCompleto")}
+            className={inputClass(erroDoCampo("nomeCompleto"))}
+            placeholder="Nome e sobrenome"
+          />
+        </Campo>
+
+        <Campo label="Telefone" opcional>
+          <input
+            type="tel"
+            value={form.telefone}
+            onChange={(e) => setForm((f) => ({ ...f, telefone: e.target.value }))}
+            className={inputClass()}
+            placeholder="(11) 91234-5678"
+          />
+          {telefoneIncompleto && (
+            <p className="mt-1 text-xs text-amber-600">Telefone parece incompleto. O cadastro não será bloqueado.</p>
+          )}
+        </Campo>
+      </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <Campo label="Data de nascimento" erro={erroDoCampo("dataNascimento")}>

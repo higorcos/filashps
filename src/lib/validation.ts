@@ -9,7 +9,9 @@ export const triagemSchema = z.object({
     .min(1, "Nome completo é obrigatório")
     .refine((v) => v.split(/\s+/).filter(Boolean).length >= 2, {
       message: "Informe nome e sobrenome",
-    }),
+    })
+    .toUpperCase(),
+  telefone: z.string().trim().optional(),
   dataNascimento: z.coerce
     .date({ error: "Data de nascimento é obrigatória" })
     .max(new Date(), { error: "Data de nascimento não pode ser no futuro" }),
@@ -27,23 +29,23 @@ export const triagemSchema = z.object({
     .or(z.literal("")),
   glicemia: z.coerce.number().int().optional(),
   pesoKg: z.coerce.number().positive().optional(),
-  criadoPor: z.string().trim().min(1, "Informe quem realizou a triagem"),
+  criadoPor: z.string().trim().min(1, "Informe quem realizou a triagem").toUpperCase(),
 });
 
 export type TriagemInput = z.infer<typeof triagemSchema>;
 
 export const unidadeSchema = z.object({
-  nome: z.string().trim().min(1, "Nome é obrigatório"),
+  nome: z.string().trim().min(1, "Nome é obrigatório").toUpperCase(),
   endereco: z.string().trim().min(1, "Endereço é obrigatório"),
 });
 
 export const profissionalSchema = z.object({
-  nome: z.string().trim().min(1, "Nome é obrigatório"),
+  nome: z.string().trim().min(1, "Nome é obrigatório").toUpperCase(),
   registro: z.string().trim().min(1, "Registro/CRM é obrigatório"),
 });
 
 export const especialidadeSchema = z.object({
-  nome: z.string().trim().min(1, "Nome é obrigatório"),
+  nome: z.string().trim().min(1, "Nome é obrigatório").toUpperCase(),
   codigoSenha: z
     .string()
     .trim()
@@ -53,7 +55,7 @@ export const especialidadeSchema = z.object({
 });
 
 export const prioridadeSchema = z.object({
-  nome: z.string().trim().min(1, "Nome é obrigatório"),
+  nome: z.string().trim().min(1, "Nome é obrigatório").toUpperCase(),
   peso: z.coerce.number().int().min(0, "Peso deve ser maior ou igual a 0"),
 });
 

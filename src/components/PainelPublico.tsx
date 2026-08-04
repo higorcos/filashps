@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 type EventoChamada = {
   tipo: "chamada";
@@ -13,14 +13,35 @@ type EventoChamada = {
   chamadoEm: string;
 };
 
-function falar(texto: string) {
+// Fila de anúncios de voz: garante que, se duas senhas forem chamadas ao mesmo tempo,
+// a segunda espera a primeira terminar em vez de sobrepor ou cortar o áudio.
+const filaDeFala: string[] = [];
+let falandoAgora = false;
+
+function processarFilaDeFala() {
+  if (falandoAgora) return;
+  const texto = filaDeFala.shift();
+  if (texto === undefined) return;
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+
+  falandoAgora = true;
   const utterance = new SpeechSynthesisUtterance(texto);
   utterance.lang = "pt-BR";
   const vozPtBr = window.speechSynthesis.getVoices().find((v) => v.lang.startsWith("pt"));
   if (vozPtBr) utterance.voice = vozPtBr;
-  window.speechSynthesis.cancel();
+  utterance.onend = avancarFilaDeFala;
+  utterance.onerror = avancarFilaDeFala;
   window.speechSynthesis.speak(utterance);
+}
+
+function avancarFilaDeFala() {
+  falandoAgora = false;
+  processarFilaDeFala();
+}
+
+function falar(texto: string) {
+  filaDeFala.push(texto);
+  processarFilaDeFala();
 }
 
 function formatarHorario(iso: string) {
@@ -31,7 +52,6 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
   const [atual, setAtual] = useState<EventoChamada | null>(null);
   const [historico, setHistorico] = useState<EventoChamada[]>([]);
   const [audioAtivo, setAudioAtivo] = useState(false);
-  const primeiraCarga = useRef(true);
 
   function ativarAudio() {
     falar("Áudio ativado");
@@ -50,18 +70,12 @@ export function PainelPublico({ unidadeId, unidadeNome }: { unidadeId: string; u
       const dados = JSON.parse((evento as MessageEvent).data) as EventoChamada[];
       setHistorico(dados);
       setAtual(dados[0] ?? null);
-      primeiraCarga.current = true;
     });
 
     es.addEventListener("chamada", (evento) => {
       const dados = JSON.parse((evento as MessageEvent).data) as EventoChamada;
       setAtual(dados);
       setHistorico((h) => [dados, ...h.filter((c) => c.filaId !== dados.filaId || c.chamadoEm !== dados.chamadoEm)].slice(0, 10));
-
-      if (primeiraCarga.current) {
-        primeiraCarga.current = false;
-        return;
-      }
 
       const destino = dados.sala
         ? `${dados.pacienteNome}, dirija-se a ${dados.sala}`
